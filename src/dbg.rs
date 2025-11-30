@@ -48,29 +48,6 @@ impl<T> MyDebug<T> {
         }
     }
 
-    fn get_break_addr(cmd: &[&str]) -> Option<*mut c_void> {
-        if cmd.len() < 2 {
-            eprintln!("<< アドレスを指定してください\n ex: break 0xZZZZ >>");
-            return None;
-        }
-
-        let addr_str = cmd[1];
-        if &addr_str[0..2] != "0x" {
-            eprintln!("<< アドレスは 16 進数です >>");
-            return None;
-        }
-
-        let addr = match usize::from_str_radix(&addr_str[2..], 16) {
-            Ok(addr) => addr,
-            Err(e) => {
-                eprintln!("<< invalid address: {e} >>");
-                return None;
-            }
-        } as *mut c_void;
-
-        Some(addr)
-    }
-
     fn do_cmd_common(&self, cmd: &[&str]) {
         match cmd[0] {
             "help" | "h" => do_help(),
@@ -142,7 +119,7 @@ impl MyDebug<NotRunning> {
                 WaitStatus::Exited(..) | WaitStatus::Signaled(..) => {
                     Err("子プロセスの実行に失敗しました".into());
                 }
-                _ => Err("子プロセスが不正な状態です".info()),
+                _ => Err("子プロセスが不正な状態です".into()),
             }
         }
     }
@@ -334,4 +311,27 @@ fn do_help() {
         exit            : 終了
         help            : このヘルプを表示 (h)
     "#);
+}
+
+fn get_break_addr(cmd: &[&str]) -> Option<*mut c_void> {
+    if cmd.len() < 2 {
+        eprintln!("<< アドレスを指定してください\n ex: break 0xZZZZ >>");
+        return None;
+    }
+
+    let addr_str = cmd[1];
+    if &addr_str[0..2] != "0x" {
+        eprintln!("<< アドレスは 16 進数です >>");
+        return None;
+    }
+
+    let addr = match usize::from_str_radix(&addr_str[2..], 16) {
+        Ok(addr) => addr,
+        Err(e) => {
+            eprintln!("<< invalid address: {e} >>");
+            return None;
+        }
+    } as *mut c_void;
+
+    Some(addr)
 }

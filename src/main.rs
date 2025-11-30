@@ -1,7 +1,7 @@
 mod dbg;
 mod helper;
 
-use dbg::{State, ZDbg};
+use dbg::{State, MyDebug};
 use helper::DynError;
 use rustyline::{error::ReadlineError, Editor};
 use std::env;
@@ -18,7 +18,7 @@ fn main() -> Result<(), DynError> {
 }
 
 fn run_dbg(filename: &str) -> Result<(), DynError> {
-    let debugger = ZDbg::new(filename.to_string());
+    let debugger = MyDebug::new(filename.to_string());
     let mut state = State::NotRunning(debugger);
     let mut rl = Editor::<()>::new()?;
 
