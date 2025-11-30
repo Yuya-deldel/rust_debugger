@@ -1,0 +1,8 @@
+[package]
+name = "mydebug"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rustyline = "10.0.0"
+nix = "0.25"
